@@ -10,6 +10,7 @@ type Interface interface {
 
 type sorter []Interface
 
+// Implement heap.Interface: Push, Pop, Len, Less, Swap
 func (s *sorter) Push(x interface{}) {
 	*s = append(*s, x.(Interface))
 }
@@ -20,13 +21,6 @@ func (s *sorter) Pop() interface{} {
 		x := (*s)[n-1]
 		*s = (*s)[0 : n-1]
 		return x
-	}
-	return nil
-}
-
-func (s *sorter) Top() interface{} {
-	if len(*s) > 0 {
-		return (*s)[0]
 	}
 	return nil
 }
@@ -43,6 +37,7 @@ func (s *sorter) Swap(i, j int) {
 	(*s)[i], (*s)[j] = (*s)[j], (*s)[i]
 }
 
+// Define priority queue struct
 type PriorityQueue struct {
 	s *sorter
 }
@@ -62,7 +57,19 @@ func (q *PriorityQueue) Pop() Interface {
 }
 
 func (q *PriorityQueue) Top() Interface {
-	return q.s.Top().(Interface)
+	if len(*q.s) > 0 {
+		return (*q.s)[0].(Interface)
+	}
+	return nil
+}
+
+func (q *PriorityQueue) Fix(x Interface, i int) {
+	(*q.s)[i] = x
+	heap.Fix(q.s, i)
+}
+
+func (q *PriorityQueue) Remove(i int) Interface {
+	return heap.Remove(q.s, i).(Interface)
 }
 
 func (q *PriorityQueue) Len() int {

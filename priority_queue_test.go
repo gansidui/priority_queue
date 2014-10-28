@@ -29,6 +29,10 @@ func (s *IntSorter) Swap(i, j int) {
 func TestInt(t *testing.T) {
 	q := New()
 
+	if q.Len() != 0 {
+		t.Fatal()
+	}
+
 	q.Push(Int(-1))
 	for i := 0; i < 998; i++ {
 		q.Push(Int(rand.Intn(100)))
@@ -63,6 +67,59 @@ func TestInt(t *testing.T) {
 	q = New()
 
 	if q.Len() != 0 {
+		t.Fatal()
+	}
+}
+
+func TestFixAndRemove(t *testing.T) {
+	q := New()
+	q.Push(Int(1))
+	q.Push(Int(3))
+	q.Push(Int(2))
+	q.Push(Int(4))
+
+	if (*q.s)[0].(Int) != 1 || (*q.s)[1].(Int) != 3 || (*q.s)[2].(Int) != 2 || (*q.s)[3].(Int) != 4 {
+		t.Fatal()
+	}
+
+	q.Fix(Int(5), 1)
+
+	if (*q.s)[0].(Int) != 1 || (*q.s)[1].(Int) != 4 || (*q.s)[2].(Int) != 2 || (*q.s)[3].(Int) != 5 {
+		t.Fatal()
+	}
+
+	a, b, c, d := q.Pop(), q.Pop(), q.Pop(), q.Pop()
+	if a.(Int) != 1 || b.(Int) != 2 || c.(Int) != 4 || d.(Int) != 5 {
+		t.Fatal()
+	}
+
+	if q.Len() != 0 {
+		t.Fatal()
+	}
+
+	q.Push(Int(8))
+	q.Push(Int(6))
+	q.Push(Int(7))
+	q.Push(Int(9))
+
+	// println((*q.s)[0].(Int), (*q.s)[1].(Int), (*q.s)[2].(Int), (*q.s)[3].(Int))
+
+	if (*q.s)[0].(Int) != 6 || (*q.s)[1].(Int) != 8 || (*q.s)[2].(Int) != 7 || (*q.s)[3].(Int) != 9 {
+		t.Fatal()
+	}
+
+	if q.Top().(Int) != 6 {
+		t.Fatal()
+	}
+
+	q.Remove(0)
+
+	if q.Top().(Int) != 7 {
+		t.Fatal()
+	}
+
+	a, b, c = q.Pop(), q.Pop(), q.Pop()
+	if a.(Int) != 7 || b.(Int) != 8 || c.(Int) != 9 {
 		t.Fatal()
 	}
 }
